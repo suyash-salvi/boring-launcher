@@ -22,7 +22,7 @@ A minimalist, intentional, and open-source Android launcher built with Flutter. 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/boring-launcher.git
+   git clone https://github.com/suyash-salvi/boring-launcher.git
    ```
 2. Navigate to the project directory:
    ```bash

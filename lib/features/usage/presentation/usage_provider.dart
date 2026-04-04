@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/usage_repository.dart';
 
@@ -9,9 +10,15 @@ final unlockCountProvider = StateNotifierProvider<UnlockNotifier, int>((ref) {
 
 class UnlockNotifier extends StateNotifier<int> {
   final UsageRepository _repository;
+  static const _channel = MethodChannel('com.boring.launcher/unlock');
 
   UnlockNotifier(this._repository) : super(0) {
     _init();
+    _channel.setMethodCallHandler((call) async {
+      if (call.method == 'onUnlock') {
+        recordUnlock();
+      }
+    });
   }
 
   Future<void> _init() async {

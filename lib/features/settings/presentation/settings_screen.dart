@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:android_intent_plus/android_intent.dart';
 import '../../apps/presentation/app_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -15,55 +13,42 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  Timer? _exitTimer;
-  double _exitProgress = 0.0;
-  bool _isExiting = false;
 
   @override
   void dispose() {
     _searchController.dispose();
-    _exitTimer?.cancel();
     super.dispose();
   }
 
-  void _startExitTimer() {
-    setState(() {
-      _isExiting = true;
-      _exitProgress = 0.0;
-    });
-    _exitTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-      setState(() {
-        _exitProgress += 0.01; // 1% per 100ms = 10% per second
-      });
-      if (_exitProgress >= 1.0) {
-        timer.cancel();
-        _exitLauncher();
-      }
-    });
-  }
-
-  void _stopExitTimer() {
-    _exitTimer?.cancel();
-    setState(() {
-      _isExiting = false;
-      _exitProgress = 0.0;
-    });
-  }
-
-  void _exitLauncher() {
-    // This allows the user to switch back to their default launcher
-    // by triggering the Android home selector.
-    SystemNavigator.pop();
-  }
-
-  void _showExitInstruction() {
-    Fluttertoast.showToast(
-      msg: "Press for 10 seconds to exit or change the launcher",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.black87,
-      textColor: Colors.white,
+  void _showHowToUse() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[900],
+        title: const Text('How to use', style: TextStyle(color: Colors.white)),
+        content: const Text(
+          '• Use the search bar to find any app.\n'
+          '• Toggle visibility to show/hide apps on the home screen.\n'
+          '• Mark apps as "distracting" to add a mindful friction symbol.\n'
+          '• Long press and drag on the home screen to reorder your apps.\n'
+          '• Click the + icon on home to return here.',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Got it', style: TextStyle(color: Colors.white38)),
+          ),
+        ],
+      ),
     );
+  }
+
+  Future<void> _openSystemSettings() async {
+    const intent = AndroidIntent(
+      action: 'android.settings.SETTINGS',
+    );
+    await intent.launch();
   }
 
   @override
@@ -76,29 +61,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         backgroundColor: Colors.black,
         iconTheme: const IconThemeData(color: Colors.white70),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: GestureDetector(
-              onTap: _showExitInstruction,
-              onLongPressStart: (_) => _startExitTimer(),
-              onLongPressEnd: (_) => _stopExitTimer(),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  if (_isExiting)
-                    SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        value: _exitProgress,
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                  const Icon(Icons.exit_to_app, color: Colors.white38),
-                ],
-              ),
-            ),
+          IconButton(
+            icon: const Icon(Icons.info_outline, color: Colors.white38),
+            onPressed: _showHowToUse,
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined, color: Colors.white38),
+            onPressed: _openSystemSettings,
           ),
         ],
         bottom: PreferredSize(

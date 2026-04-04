@@ -29,7 +29,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) setState(() => _now = DateTime.now());
     });
-    Future.microtask(() => ref.read(unlockCountProvider.notifier).recordUnlock());
   }
 
   @override
@@ -43,7 +42,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      ref.read(unlockCountProvider.notifier).recordUnlock();
       setState(() => _searchQuery = ''); 
       _searchController.clear();
     }
@@ -95,7 +93,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center, // Aligns elements vertically centered in the row
                   children: [
                     // Time and Date Section
                     Column(
@@ -112,26 +110,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                       ],
                     ),
                     
-                    // Icons Section (Phone and Camera) - Positioned in between
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            onPressed: _openPhone,
-                            icon: const Icon(Icons.phone_outlined, color: Colors.white24, size: 28),
-                            constraints: const BoxConstraints(),
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                          ),
-                          IconButton(
-                            onPressed: _openCamera,
-                            icon: const Icon(Icons.camera_alt_outlined, color: Colors.white24, size: 28),
-                            constraints: const BoxConstraints(),
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                          ),
-                        ],
-                      ),
+                    // Icons Section (Phone and Camera)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: _openPhone,
+                          icon: const Icon(Icons.phone_outlined, color: Colors.white24, size: 28),
+                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                        ),
+                        IconButton(
+                          onPressed: _openCamera,
+                          icon: const Icon(Icons.camera_alt_outlined, color: Colors.white24, size: 28),
+                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                        ),
+                      ],
                     ),
 
                     // Unlocks Counter Section
@@ -232,7 +227,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                 Align(
                   alignment: Alignment.bottomRight,
                   child: IconButton(
-                    icon: const Icon(Icons.settings, color: Colors.white38, size: 24),
+                    icon: const Icon(Icons.add, color: Colors.white38, size: 28),
                     onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
                   ),
                 )

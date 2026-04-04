@@ -72,6 +72,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     await intent.launch();
   }
 
+  Future<void> _openPhone() async {
+    const intent = AndroidIntent(
+      action: 'android.intent.action.DIAL',
+    );
+    await intent.launch();
+  }
+
   @override
   Widget build(BuildContext context) {
     final appList = ref.watch(appListProvider);
@@ -88,7 +95,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Time and Date Section
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -102,21 +111,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                         ),
                       ],
                     ),
+                    
+                    // Icons Section (Phone and Camera) - Positioned in between
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            onPressed: _openPhone,
+                            icon: const Icon(Icons.phone_outlined, color: Colors.white24, size: 28),
+                            constraints: const BoxConstraints(),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                          IconButton(
+                            onPressed: _openCamera,
+                            icon: const Icon(Icons.camera_alt_outlined, color: Colors.white24, size: 28),
+                            constraints: const BoxConstraints(),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Unlocks Counter Section
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              onPressed: _openCamera,
-                              icon: const Icon(Icons.camera_alt_outlined, color: Colors.white24, size: 18),
-                              constraints: const BoxConstraints(),
-                              padding: const EdgeInsets.only(right: 8),
-                            ),
-                            Text('$unlocks', style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w200)),
-                          ],
+                        Text(
+                          '$unlocks', 
+                          style: const TextStyle(
+                            color: Colors.white, 
+                            fontSize: 32, 
+                            fontWeight: FontWeight.w200,
+                            height: 1,
+                          )
                         ),
+                        const SizedBox(height: 4),
                         const Text('unlocks', style: TextStyle(color: Colors.white38, fontSize: 12)),
                       ],
                     )

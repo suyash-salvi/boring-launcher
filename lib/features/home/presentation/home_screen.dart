@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:android_intent_plus/android_intent.dart';
 import '../../apps/presentation/app_provider.dart';
 import '../../settings/presentation/settings_screen.dart';
 import '../../usage/presentation/usage_provider.dart';
@@ -64,6 +65,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     InstalledApps.startApp(packageName);
   }
 
+  Future<void> _openCamera() async {
+    const intent = AndroidIntent(
+      action: 'android.media.action.STILL_IMAGE_CAMERA',
+    );
+    await intent.launch();
+  }
+
   @override
   Widget build(BuildContext context) {
     final appList = ref.watch(appListProvider);
@@ -97,8 +105,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                         Text('$unlocks', style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w200)),
-                         const Text('unlocks', style: TextStyle(color: Colors.white38, fontSize: 12)),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: _openCamera,
+                              icon: const Icon(Icons.camera_alt_outlined, color: Colors.white24, size: 18),
+                              constraints: const BoxConstraints(),
+                              padding: const EdgeInsets.only(right: 8),
+                            ),
+                            Text('$unlocks', style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w200)),
+                          ],
+                        ),
+                        const Text('unlocks', style: TextStyle(color: Colors.white38, fontSize: 12)),
                       ],
                     )
                   ],

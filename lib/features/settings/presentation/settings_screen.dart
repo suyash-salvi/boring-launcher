@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../apps/presentation/app_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -12,11 +15,55 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  Timer? _exitTimer;
+  double _exitProgress = 0.0;
+  bool _isExiting = false;
 
   @override
   void dispose() {
     _searchController.dispose();
+    _exitTimer?.cancel();
     super.dispose();
+  }
+
+  void _startExitTimer() {
+    setState(() {
+      _isExiting = true;
+      _exitProgress = 0.0;
+    });
+    _exitTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      setState(() {
+        _exitProgress += 0.01; // 1% per 100ms = 10% per second
+      });
+      if (_exitProgress >= 1.0) {
+        timer.cancel();
+        _exitLauncher();
+      }
+    });
+  }
+
+  void _stopExitTimer() {
+    _exitTimer?.cancel();
+    setState(() {
+      _isExiting = false;
+      _exitProgress = 0.0;
+    });
+  }
+
+  void _exitLauncher() {
+    // This allows the user to switch back to their default launcher
+    // by triggering the Android home selector.
+    SystemNavigator.pop();
+  }
+
+  void _showExitInstruction() {
+    Fluttertoast.showToast(
+      msg: "Press for 10 seconds to exit or change the launcher",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.black87,
+      textColor: Colors.white,
+    );
   }
 
   @override
@@ -28,6 +75,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         title: const Text('Configure Apps', style: TextStyle(color: Colors.white70)),
         backgroundColor: Colors.black,
         iconTheme: const IconThemeData(color: Colors.white70),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: GestureDetector(
+              onTap: _showExitInstruction,
+              onLongPressStart: (_) => _startExitTimer(),
+              onLongPressEnd: (_) => _stopExitTimer(),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (_isExiting)
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        value: _exitProgress,
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                  const Icon(Icons.exit_to_app, color: Colors.white38),
+                ],
+              ),
+            ),
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: Padding(

@@ -13,27 +13,28 @@ A minimalist, intentional, and open-source Android launcher built with Flutter. 
 
 ## 📸 Screenshots
 
-### 🏠 Home Screen
-![Home Screen](assets/images/main-page.jpg)
-> Clean and minimal interface with text-based navigation
-
----
-
-### ⚙️ Configure Apps
-![Configure Page](assets/images/configure-page.jpg)
-> Select and reorder apps shown on your home screen
-
----
-
-### 🔍 How to Use
-![How to Use](assets/images/how-to-use.jpg)
-> Quick guide to interacting with the launcher
-
----
-
-### 🚫 Distraction Notice
-![Distraction Notice](assets/images/distraction-notice.jpg)
-> Mindful prompt before opening distracting apps
+<table>
+  <tr>
+    <td align="center">
+      <img src="assets/images/main-page.jpg" width="200"><br>
+      <em>Home Screen</em>
+    </td>
+    <td align="center">
+      <img src="assets/images/configure-page.jpg" width="200"><br>
+      <em>Configure Apps</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="assets/images/how-to-use.jpg" width="200"><br>
+      <em>How to Use</em>
+    </td>
+    <td align="center">
+      <img src="assets/images/distraction-notice.jpg" width="200"><br>
+      <em>Distraction Notice</em>
+    </td>
+  </tr>
+</table>
 
 
 ## 🚀 Getting Started

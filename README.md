@@ -10,6 +10,19 @@ A minimalist, intentional, and open-source Android launcher built with Flutter. 
 - **Searchable Apps**: Quickly find and launch any app on your device.
 - **No Tracking**: Your app usage data never leaves your device.
 
+
+## 📸 Screenshots
+
+<p align="center">
+  <img src="assets/images/main-page.jpg" width="200"/>
+  <img src="assets/images/configure-page.jpg" width="200"/>
+  <img src="assets/images/how-to-use.jpg" width="200"/>
+</p>
+
+<p align="center">
+  <em>Minimal UI • Configure apps • Usage guide</em>
+</p>
+
 ## 🚀 Getting Started
 
 ### Prerequisites
